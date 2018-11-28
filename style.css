@@ -34,6 +34,14 @@ h2, h3 {
 	text-align: center;
 }
 
+#headerIcon {
+	float: left;
+}
+
+#headerTitle {
+	text-align: center;
+}
+
 #content {
 	padding: 10px;
 }
