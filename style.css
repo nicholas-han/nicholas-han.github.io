@@ -8,8 +8,25 @@ a {
 	color: black;
 }
 
+a:hover {
+  color: blue;
+}
+
+@font-face { font-family: Knights Quest; src: url('font/Knights Quest.ttf'); }
+@font-face { font-family: Cimbrian; src: url('font/Cimbrian.ttf'); }
+
+#mainPageTitle {
+	font-family: Cimbrian;
+}
+
+#mainPageSubtitle {
+	font-family: Knights Quest;
+	font-size: 36px;
+	color: #000;
+	text-align: center;
+}
+
 h1 {
-	font-family: "Brush Script MT";
 	color: #000;
 	font-size: 60pt;
 	margin: 0;
@@ -63,9 +80,19 @@ h2, h3 {
 
 #footer {
 	clear: both;
-	padding: 10px;
-	font-family: "Book Antiqua";
+	padding: 20px;
+	line-height: 2em;
+	font-family: Book Antiqua;
 	background-color: #EFEFEF;
 	color: #666;
 	text-align: center;
 }
+
+.collapsible {
+	cursor: pointer;
+}
+
+.collapsibleContent {
+	display: none;
+}
+

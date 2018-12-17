@@ -4,15 +4,16 @@
     <head>
             <title> Dynamics & Finance </title>
             <link rel="stylesheet" type="text/css" href="style.css" />
+            <script src="script.js"> </script>
 
     </head>
     <body>
         <div id="container">
-            <div id="header"> <!-- id must be unique -->
+            <div id="header">
                 <div id="headerIcon"> <img src="images/cube4D.jpg" width="100" alt="4D Cube"/> </div>
                 <div id="headerTitle">
-                    <h1> Dynamics & Finance </h1>
-                    <h2> <i> Nicholas Han's Homepage </i> </h2>
+                    <h1 id="mainPageTitle"> Dynamics & Finance </h1>
+                    <h2 id="mainPageSubtitle"> <i> 60 W. Riverside Dr. </i> </h2>
                 </div>
             </div>
 
@@ -22,7 +23,7 @@
                     <ul>
                         <li> <a href="http://github.com/nicholas-han"> Github </a> </li>
                         <li> Blog </li>
-                        <li> Tweets </li>
+                        <li> Tweet </li>
                         <li> About </li>
                     </ul>
                 </div>
@@ -41,12 +42,25 @@
                         <li> <a href="blogs/tech/2018-08-29-git-commands.md"> Useful Git Commands </a> </li>
                         <li> <a href="blogs/tech/2018-09-02-python-datetime.md"> Python Datetime Library </a> </li>
                     </ul>
-
+                    <h2> Demography </h2>
+                    <table>
+                        <tr> <th> City </th> <th> From </th> <th> To </th> </tr>
+                        <tr> <th> Shenyang </th> <td> 1994 </td> <td> 2012 </td> </tr>
+                        <tr> <th> Los Angeles </th> <td> 2012 </td> <td> 2016 </td> </tr>
+                        <tr> <th> Princeton </th> <td> 2016 </td> <td> 2018 </td> </tr>
+                        <tr> <th> Chicago </th> <td> 2018 </td> <td> Present </td> </tr>
+                    </table>
                 </div>
             </div>
 
             <div id="footer">
-                &copy; Nicholas Han &#8226; 2018 &#8226; <a href="http://nicholas-han.github.io" > nicholas-han.github.io </a>
+                Copyright &copy; Nicholas Han &#8226; 2018 &#8226; <a href="http://nicholas-han.github.io" > nicholas-han.github.io </a> &#8226; All rights reserved. <br />
+                <a class="collapsible" onclick="collapse(this, 'Show Contributions', 'Hide Contributions')"> <u> Show Contributions </u> </a>
+                <div class="collapsibleContent">
+                    Title Font <a href="http://moorstation.org/typoasis/designers/steffmann/index.htm" > Cimbrian </a> by <a href="http://www.steffmann.de/wordpress/"> Dieter Steffmann </a>
+                    <br />
+                    Subtitle Font <a href="http://www.moorstation.org/typoasis/designers/gemnew/home.htm"> Knight Quest </a> by <a href="http://www.moorstation.org/typoasis/designers/gemnew/home.htm"> Gem Fonts </a>
+                </div>    
             </div>
         </div>
     </body>
