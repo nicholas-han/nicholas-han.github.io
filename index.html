@@ -3,8 +3,13 @@
 
     <head>
             <title> Dynamics & Finance </title>
-            <link rel="stylesheet" type="text/css" href="style.css" />
-            <script src="script.js"> </script>
+            <link rel="stylesheet" type="text/css" href="CSS/style.css" />
+            <script src="scripts/TwoStarSystemScript.js"></script>
+            <script src="scripts/MainScript.js"></script>
+            <script src="scripts/amcharts4/core.js"></script>
+            <script src="scripts/amcharts4/maps.js"></script>
+            <script src="scripts/amcharts4/themes/animated.js"></script>
+            <script src="scripts/amcharts4/geodata/worldLow.js"></script>
 
     </head>
     <body>
@@ -30,18 +35,10 @@
                 <div id="main">
                     <h2> Welcome </h2>
                     <p> This is my website, which contains financial blogs, microblogs, and potentially many interesting stuff as you may imagine. Unfortunately, I expect it to be under construction going into mid 2019. </p>
-                    <h2> Blogs </h2>
-                    <h3> Strats </h3>
-                    <ul>
-                        <li> <a href="blogs/strats/2018-11-26-Beta-Reciprocal-LR.html"> Beta Reciprocals in Linear Regression </a> </li>
-                        <li> <a href="blogs/strats/TheoUpdateDemo.pdf"> Theo Price Demo </li>
-                    </ul>
-                    <h3> Tech </h3>
-                    <ul>
-                        <li> <a href="blogs/tech/2018-08-28-python-data-structures.md"> Useful Python Data Structures </a> </li>
-                        <li> <a href="blogs/tech/2018-08-29-git-commands.md"> Useful Git Commands </a> </li>
-                        <li> <a href="blogs/tech/2018-09-02-python-datetime.md"> Python Datetime Library </a> </li>
-                    </ul>
+                    <canvas class="TwoStarSystemCanvas"></canvas>
+                    
+                    <p id="AlertCanvasNotSupported">This animation is not supported by your browser.</p>
+
                     <h2> Demography </h2>
                     <table>
                         <tr> <th> City </th> <th> From </th> <th> To </th> </tr>
@@ -50,6 +47,9 @@
                         <tr> <th> Princeton </th> <td> 2016 </td> <td> 2018 </td> </tr>
                         <tr> <th> Chicago </th> <td> 2018 </td> <td> Present </td> </tr>
                     </table>
+
+                    <div id="chartdiv"></div>
+
                 </div>
             </div>
 
