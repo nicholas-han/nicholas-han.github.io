@@ -1,5 +1,5 @@
-@font-face { font-family: Knights Quest; src: url('../font/Knights Quest.ttf'); }
-@font-face { font-family: Cimbrian; src: url('../font/Cimbrian.ttf'); }
+@font-face { font-family: Knights Quest; src: url('../fonts/Knights Quest.ttf'); }
+@font-face { font-family: Cimbrian; src: url('../fonts/Cimbrian.ttf'); }
 
 body {
 	background-color: #FFF;

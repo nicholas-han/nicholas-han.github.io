@@ -1,9 +1,7 @@
-document.write("asdf")
-
-
 (function(){
 
   // Themes begin
+  const am4core = window.core;
   am4core.useTheme(am4themes_animated);
   // Themes end
 
