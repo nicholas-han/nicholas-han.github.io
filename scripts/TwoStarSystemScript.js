@@ -1,71 +1,124 @@
 window.onload = function(){
 
+  // Calculates the position of the Earth
   var physics = (function() {
-    // Initial condition for the system
+    var constants = {
+      gravitationalConstant: 6.67408 * Math.pow(10, -11),
+      earthSunDistanceMeters: 1.496 * Math.pow(10, 11),
+      earthAngularVelocityMetersPerSecond: 1.990986 *  Math.pow(10, -7),
+      massOfTheSunKg: 1.98855 * Math.pow(10, 30)
+    };
+
+    // The length of one AU (Earth-Sun distance) in pixels.
+    var pixelsInOneEarthSunDistancePerPixel = 150;
+
+    // A factor by which we scale the distance between the Sun and the Earth
+    // in order to show it on screen
+    var scaleFactor = constants.earthSunDistanceMeters / pixelsInOneEarthSunDistancePerPixel;
+
+    // The number of calculations of orbital path done in one 16 millisecond frame.
+    // The higher the number, the more precise are the calculations and the slower the simulation.
+    var numberOfCalculationsPerFrame = 1000;
+
+    // The length of the time increment, in seconds.
+    var deltaT = 3600 * 24 / numberOfCalculationsPerFrame;
+
+    // Initial condition of the model
     var initialConditions = {
-      position:       1.0, // Box is shown on the right initially
-      velocity:       0.0, // Velocity is zero
-      springConstant: 100.0, // The higher the value the stiffer the spring
-      mass:           10.0 // The mass of the box
+      distance: {
+        value: constants.earthSunDistanceMeters,
+        speed: 0.00
+      },
+      angle: {
+        value: Math.PI / 6,
+        speed: constants.earthAngularVelocityMetersPerSecond
+      }
     };
 
     // Current state of the system
     var state = {
-      /*
-      Position of the box:
-        0 is when the box is at the center.
-        1.0 is the maximum position to the right.
-        -1.0 is the maximum position to the left.
-      */
-      position: 0,
-      velocity: 0,
-      springConstant: 0, // The higher the value the stiffer the spring
-      mass: 0 // The mass of the box
+      distance: {
+        value: 0,
+        speed: 0
+      },
+      angle: {
+        value: 0,
+        speed: 0
+      },
+      massOfTheSunKg: constants.massOfTheSunKg,
+      paused: false
     };
 
-    var deltaT = 0.016; // The length of the time increment, in seconds.
+    function calculateDistanceAcceleration(state) {
+      // [acceleration of distance] = [distance][angular velocity]^2 - G * M / [distance]^2
+      return state.distance.value * Math.pow(state.angle.speed, 2) -
+        (constants.gravitationalConstant * state.massOfTheSunKg) / Math.pow(state.distance.value, 2);
+    }
+
+    function calculateAngleAcceleration(state) {
+      // [acceleration of angle] = - 2[speed][angular velocity] / [distance]
+      return -2.0 * state.distance.speed * state.angle.speed / state.distance.value;
+    }
+
+    // Calculates a new value based on the time change and its derivative
+    // For example, it calculates the new distance based on the distance derivative (velocity)
+    // and the elapsed time interval.
+    function newValue(currentValue, deltaT, derivative) {
+      return currentValue + deltaT * derivative;
+    }
 
     function resetStateToInitialConditions() {
-      state.position = initialConditions.position;
-      state.velocity = initialConditions.velocity;
-      state.springConstant = initialConditions.springConstant;
-      state.mass = initialConditions.mass;
+      state.distance.value = initialConditions.distance.value;
+      state.distance.speed = initialConditions.distance.speed;
+
+      state.angle.value = initialConditions.angle.value;
+      state.angle.speed = initialConditions.angle.speed;
     }
 
-    // Returns acceleration (change of velocity) for the given position
-    function calculateAcceleration(x) {
-      // We are using the equation of motion for the harmonic oscillator:
-      // a = -(k/m) * x
-      // Where a is acceleration, x is displacement, k is spring constant and m is mass.
-
-      return -(state.springConstant / state.mass) * x;
-    }
-
-    // Calculates the new velocity: current velocity plus the change.
-    function newVelocity(acceleration) {
-      return state.velocity + deltaT * acceleration;
-    }
-
-    // Calculates the new position: current position plus the change.
-    function newPosition() {
-      return state.position + deltaT * state.velocity;
+    // The distance that is used for drawing on screen
+    function scaledDistance() {
+      return state.distance.value / scaleFactor;
     }
 
     // The main function that is called on every animation frame.
-    // It calculates and updates the current position of the box.
+    // It calculates and updates the current positions of the bodies
     function updatePosition() {
-      var acceleration = calculateAcceleration(state.position);
-      state.velocity = newVelocity(acceleration);
-      state.position = newPosition();
-      if (state.position > 1) { state.position = 1; }
-      if (state.position < -1) { state.position = -1; }
+      if (physics.state.paused) { return; }
+      for (var i = 0; i < numberOfCalculationsPerFrame; i++) {
+        calculateNewPosition();
+      }
+
+    }
+
+    // Calculates position of the Earth
+    function calculateNewPosition() {
+      // Calculate new distance
+      var distanceAcceleration = calculateDistanceAcceleration(state);
+      state.distance.speed = newValue(state.distance.speed, deltaT, distanceAcceleration);
+      state.distance.value = newValue(state.distance.value, deltaT, state.distance.speed);
+
+      // Calculate new angle
+      var angleAcceleration = calculateAngleAcceleration(state);
+      state.angle.speed = newValue(state.angle.speed, deltaT, angleAcceleration);
+      state.angle.value = newValue(state.angle.value, deltaT, state.angle.speed);
+
+      if (state.angle.value > 2 * Math.PI) {
+        state.angle.value = state.angle.value % (2 * Math.PI);
+      }
+    }
+
+    // Updates the mass of the Sun
+    function updateFromUserInput(solarMassMultiplier) {
+      state.massOfTheSunKg = constants.massOfTheSunKg * solarMassMultiplier;
     }
 
     return {
+      scaledDistance: scaledDistance,
       resetStateToInitialConditions: resetStateToInitialConditions,
       updatePosition: updatePosition,
       initialConditions: initialConditions,
-      state: state,
+      updateFromUserInput: updateFromUserInput,
+      state: state
     };
   })();
 
@@ -73,97 +126,87 @@ window.onload = function(){
   var graphics = (function() {
     var canvas = null, // Canvas DOM element.
       context = null, // Canvas context for drawing.
-      canvasHeight = 100,
-      boxSize = 50,
-      springInfo = {
-        height: 30, // Height of the spring
-        numberOfSegments: 12 // Number of segments in the spring.
-      },
+      canvasHeight = 400,
+      earthSize = 25,
+      sunsSize = 60,
       colors = {
-        shade30: "#a66000",
-        shade40: "#ff6c00",
-        shade50: "#ffb100"
-      };
+        orbitalPath: "#777777"
+      },
+      previousEarthPosition = null,
+      earthElement,
+      sunElement,
+      earthEndElement,
+      currentSunsSize = sunsSize,
+      middleX = 1,
+      middleY = 1;
 
-    // Return the middle X position of the box
-    function boxMiddleX(position) {
-      var boxSpaceWidth = canvas.width - boxSize;
-      return boxSpaceWidth * (position + 1) / 2 + boxSize / 2;
+    function drawTheEarth(earthPosition) {
+      var left = (earthPosition.x - earthSize/2) + "px";
+      var top = (earthPosition.y - earthSize/2) + "px";
+      earthElement.style.left = left;
+      earthElement.style.top = top;
     }
 
-    // Draw spring from the box to the center. Position argument is the box position and varies from -1 to 1.
-    // Value 0 corresponds to the central position, while -1 and 1 are the left and right respectively.
-    function drawSpring(position) {
-      var springEndX = boxMiddleX(position),
-        springTopY = (canvasHeight - springInfo.height) / 2,
-        springEndY = canvasHeight / 2,
-        canvasMiddleX = canvas.width / 2,
-        singleSegmentWidth = (canvasMiddleX - springEndX) / (springInfo.numberOfSegments - 1),
-        springGoesUp = true;
+    function calculateEarthPosition(distance, angle) {
+      middleX = Math.floor(canvas.width / 2);
+      middleY = Math.floor(canvas.height / 2);
+      var centerX = Math.cos(angle) * distance + middleX;
+      var centerY = Math.sin(-angle) * distance + middleY;
 
-      context.beginPath();
-      context.lineWidth = 1;
-      context.strokeStyle = colors.shade40;
-      context.moveTo(springEndX, springEndY);
+      return {
+        x: centerX,
+        y: centerY
+      };
+    }
 
-      for (var i = 0; i < springInfo.numberOfSegments; i++) {
-        var currentSegmentWidth = singleSegmentWidth;
-        if (i === 0 || i === springInfo.numberOfSegments - 1) { currentSegmentWidth /= 2; }
+    // Updates the size of the Sun based on its mass. The sunMass argument is a fraction of the real Sun's mass.
+    function updateSunSize(sunMass) {
+      sunElement.setAttribute("style","filter:brightness(" + sunMass + "); " +
+        "-webkit-filter:brightness(" + sunMass + "); ");
+      var sunsDefaultWidth = sunsSize;
+      currentSunsSize = sunsDefaultWidth * Math.pow(sunMass, 1/3);
+      sunElement.style.width = currentSunsSize + "px";
+      sunElement.style.marginLeft = -(currentSunsSize / 2.0) + "px";
+      sunElement.style.marginTop = -(currentSunsSize / 2.0) + "px";
+    }
 
-        springEndX += currentSegmentWidth;
-        springEndY = springTopY;
-        if (!springGoesUp) { springEndY += springInfo.height; }
-        if (i === springInfo.numberOfSegments - 1) { springEndY = canvasHeight / 2; }
-
-        context.lineTo(springEndX, springEndY);
-        springGoesUp = !springGoesUp;
+    function drawOrbitalLine(newEarthPosition) {
+      if (previousEarthPosition === null) {
+        previousEarthPosition = newEarthPosition;
+        return;
       }
 
+      context.beginPath();
+      context.strokeStyle = colors.orbitalPath;
+      context.moveTo(previousEarthPosition.x, previousEarthPosition.y);
+      context.lineTo(newEarthPosition.x, newEarthPosition.y);
       context.stroke();
+
+      previousEarthPosition = newEarthPosition;
     }
 
-    // Draw a box at position. Position is a value from -1 to 1.
-    // Value 0 corresponds to the central position, while -1 and 1 are the left and right respectively.
-    function drawBox(position) {
-      var boxTopY = Math.floor((canvasHeight - boxSize) / 2);
-      var startX = boxMiddleX(position) - boxSize / 2;
+    // Return true if Earth has collided with the Sun
+    function isEarthCollidedWithTheSun(earthPosition) {
+      var correctedSunsSize = currentSunsSize - 20;
+      var sunHalf = correctedSunsSize / 2;
+      var sunLeft = middleX - sunHalf;
+      var sunRight = middleX + sunHalf;
+      var sunTop = middleY - sunHalf;
+      var sunBottom = middleY + sunHalf;
 
-      // Rectangle
-      context.beginPath();
-      context.fillStyle = colors.shade50;
-      context.fillRect(startX, boxTopY, boxSize, boxSize);
-
-      // Border around rectangle
-      context.beginPath();
-      context.lineWidth = 1;
-      context.strokeStyle = colors.shade30;
-      context.strokeRect(startX + 0.5, boxTopY + 0.5, boxSize - 1, boxSize - 1);
+      return (earthPosition.x >= sunLeft && earthPosition.x <= sunRight &&
+        earthPosition.y >= sunTop && earthPosition.y <= sunBottom);
     }
 
-    // Draw vertical line in the middle
-    function drawMiddleLine() {
-      var middleX = Math.floor(canvas.width / 2);
+    // Draws the scene
+    function drawScene(distance, angle) {
+      var earthPosition = calculateEarthPosition(distance, angle);
+      drawTheEarth(earthPosition);
+      drawOrbitalLine(earthPosition);
 
-      context.beginPath();
-      context.moveTo(middleX, 0);
-      context.lineTo(middleX, canvas.height);
-      context.lineWidth = 2;
-      context.strokeStyle = colors.shade40;
-      context.setLineDash([2,3]);
-      context.stroke();
-      context.setLineDash([1,0]);
-    }
-
-    // Clears everything and draws the whole scene: the line, spring and the box.
-    function drawScene(position) {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      drawMiddleLine();
-      drawSpring(position);
-      drawBox(position);
-    }
-
-    function hideCanvasNotSupportedMessage() {
-      document.getElementById("AlertCanvasNotSupported").style.display ='none';
+      if (isEarthCollidedWithTheSun(earthPosition)) {
+        physics.state.paused = true;
+      }
     }
 
     // Resize canvas to will the width of container
@@ -177,7 +220,7 @@ window.onload = function(){
     // Create canvas for drawing and call success argument
     function init(success) {
       // Find the canvas HTML element
-      canvas = document.getElementById("TwoStarSystemCanvas");
+      canvas = document.querySelector(".EarthOrbitSimulation-canvas");
 
       // Check if the browser supports canvas drawing
       if (!(window.requestAnimationFrame && canvas && canvas.getContext)) { return; }
@@ -187,19 +230,28 @@ window.onload = function(){
       if (!context) { return; } // Error, browser does not support canvas
 
       // If we got to this point it means the browser can draw
-      // Hide the old browser message
-      hideCanvasNotSupportedMessage();
 
       // Update the size of the canvas
       fitToContainer();
+
+      earthElement = document.querySelector(".EarthOrbitSimulation-earth");
+      sunElement = document.querySelector(".EarthOrbitSimulation-sun");
+      earthEndElement = document.querySelector(".EarthOrbitSimulation-earthEnd");
 
       // Execute success callback function
       success();
     }
 
+    function clearScene() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      previousEarthPosition = null;
+    }
+
     return {
       fitToContainer: fitToContainer,
       drawScene: drawScene,
+      updateSunSize: updateSunSize,
+      clearScene: clearScene,
       init: init
     };
   })();
@@ -209,7 +261,7 @@ window.onload = function(){
     // The method is called 60 times per second
     function animate() {
       physics.updatePosition();
-      graphics.drawScene(physics.state.position);
+      graphics.drawScene(physics.scaledDistance(), physics.state.angle.value);
       window.requestAnimationFrame(animate);
     }
 
@@ -221,10 +273,10 @@ window.onload = function(){
         // Redraw the scene if page is resized
         window.addEventListener('resize', function(event){
           graphics.fitToContainer();
-          graphics.drawScene(physics.state.position);
+          graphics.clearScene();
+          graphics.drawScene(physics.scaledDistance(), physics.state.angle.value);
         });
 
-        // Start the animation sequence
         animate();
       });
     }
@@ -235,5 +287,4 @@ window.onload = function(){
   })();
 
   simulation.start();
-
 };
