@@ -1,95 +1,73 @@
 @font-face { font-family: Cimbrian; src: url('../fonts/Cimbrian.ttf'); }
 
 body {
-	background-color: #FFF;
-	font-family: Exchange;
+    background-color: #FFF;
+    font-family: Exchange;
 }
 
 a {
-	text-decoration: none;
-	color: black;
+    text-decoration: none;
+    color: black;
 }
 
 a:hover {
   color: blue;
 }
 
-h1 {
-	color: #000;
-	font-size: 60pt;
-	margin: 0;
+h2 {
+    text-align: center;
+    font-size: 40px;
 }
-
 h2, h3 {
-	font-family: Escrow;
-	color: #000;
-	margin: 0;
+    text-indent: 0;
+    color: #000;
+    margin: 0;
 }
 
-#container {
-	background-color: white;
-	width: 1200px;
-	margin-left: auto;
-	margin-right: auto;
+#canvas {
+    background-color: white;
+    width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #header {
-	background-color: #EFEFEF;
-	color: white;
-	text-align: center;
-	height: 150px;
+    background-color: #EFEFEF;
+    color: white;
+    text-align: center;
+    height: 150px;
 }
 
-#headerIcon {
-	float: left;
-	width: 150px;
-
+#body {
+    padding: 10px
 }
 
-#headerTitle {
-	text-align: center;
+.column {
+    float: left;
 }
 
-#ArticleTitle {
-	font-family: Cimbrian;
+.left, .right {
+    width: 15%;
 }
 
-#articleSubtitle {
-	font-family: Knights Quest;
-	font-size: 36px;
-	color: #000;
-	text-align: center;
+.right {
+    width: 15%;
 }
 
-#content {
-	padding: 10px;
+.middle {
+    width: 70%;
 }
 
-#nav {
-	width: 180px;
-	float: left;
-}
-
-#nav ul {
-	list-style-type: none;
-	padding: 0;
-}
-
-#main {
-	width: 1000px;
-	float: right;
-}
-
-#main p {
-	text-indent: 2em;
+.column p {
+    text-indent: 2em;
 }
 
 #footer {
-	clear: both;
-	padding: 20px;
-	line-height: 2em;
-	font-family: Book Antiqua;
-	background-color: #EFEFEF;
-	color: #666;
-	text-align: center;
+    clear: both;
+    padding: 20px;
+    line-height: 2em;
+    font-family: Book Antiqua;
+    background-color: #EFEFEF;
+    color: #666;
+    text-align: center;
 }
