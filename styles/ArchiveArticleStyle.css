@@ -18,10 +18,17 @@ h2 {
     text-align: center;
     font-size: 40px;
 }
-h2, h3 {
+
+h2, h3, h4 {
     text-indent: 0;
     color: #000;
     margin: 0;
+}
+
+h4 {
+    text-align: center;
+    font-size: 22px;
+
 }
 
 #canvas {
@@ -39,15 +46,15 @@ h2, h3 {
 }
 
 #body {
-    padding: 10px
+    padding: 10px;
 }
 
 .column {
     float: left;
 }
 
-.left, .right {
-    width: 15%;
+.left {
+    width: 10%;
 }
 
 .right {
@@ -55,13 +62,16 @@ h2, h3 {
 }
 
 .middle {
-    width: 70%;
+    width: 75%;
 }
 
 .column p {
     text-indent: 2em;
 }
 
+li {
+    margin: 10px 0;
+}
 #footer {
     clear: both;
     padding: 20px;
