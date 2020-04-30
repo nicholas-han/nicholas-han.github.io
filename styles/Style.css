@@ -26,6 +26,15 @@ h2, h3 {
 	color: #000;
 	margin: 0;
 }
+ p {
+  font-size: 18px;
+ }
+
+button {
+  height: 40px;
+  font-family: Comic sans MS;
+  margin: 10px;
+}
 
 #container {
 	background-color: white;
@@ -91,7 +100,7 @@ h2, h3 {
 	text-align: center;
 }
 
-.collapsible {
+.clickable {
 	cursor: pointer;
 }
 
