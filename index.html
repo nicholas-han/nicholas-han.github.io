@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html>
-
     <head>
-            <title> Dynamics & Finance </title>
-            <link rel="stylesheet" type="text/css" href="styles/Style.css" />
-            <script src="scripts/MainScript.js"></script>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Dynamics & Finance </title>
+        <link rel="stylesheet" type="text/css" href="styles/Style.css" />
+        <script type="text/javascript" src="scripts/MainScript.js"></script>
+        <script type="text/javascript" src="scripts/Animation4Dcube.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <body>
+    <body onload="initHeaderIcon();">
         <div id="container">
             <div id="header">
-                <div id="headerIcon">
-                    <img src="images/cube4D.jpg" width="100" alt="4D Cube"/>
-                </div>
+                <canvas id="headerIcon" width="150px" height="150px">4D Cube Animation</canvas>
                 <div id="headerTitle">
                     <h1 id="mainPageTitle"> Dynamics & Finance </h1>
                     <h2 id="mainPageSubtitle"> <i> 60 W. Riverside Dr. </i> </h2>
@@ -30,7 +28,6 @@
                 </div>
                 <div id="main">
                     <h2> Welcome </h2>
-                    <!--<div>html commenting style</div>-->
                 </div>
             </div>
             <div id="footer">
