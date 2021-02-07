@@ -27,7 +27,11 @@ h2, h3 {
 	margin: 0;
 }
 
- p {
+li {
+	padding: 5px;
+}
+
+p {
   font-size: 18px;
  }
 
@@ -113,3 +117,22 @@ button {
 .collapsibleContent {
 	display: none;
 }
+
+.articleLink {
+	font-family: KaiTi;
+	font-size: 22px;
+	font-weight: bold;
+	font-color:	darkblue;
+}
+
+.articleTitle {
+	font-family: KaiTi;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.articleDesc {
+	font-family: KaiTi;
+	font-size: 18px;
+}
+
